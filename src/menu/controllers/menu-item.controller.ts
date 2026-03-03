@@ -21,6 +21,7 @@ import { ApiOkResponseWithData } from '../../../utils/decorators/ResponseFormat'
 import { CreatedResponse } from '../../../utils/decorators/CreatedResponse';
 import { DeletedResponse } from '../../../utils/decorators/DeletedResponse';
 import { UpdatedResponse } from '../../../utils/decorators/UpdatedResponse';
+import { FileField, ReceiveFile } from '../../../utils/multer.helper';
 
 @Controller('menu-item')
 export class MenuItemController {
@@ -28,18 +29,26 @@ export class MenuItemController {
 
   @Post()
   @CreatedResponse()
+  @ReceiveFile('image', 1)
   @PermissionGuard(['menu-item:create'])
   @ProtectRoute()
-  async create(@Body() dto: CreateMenuItemDto) {
-    return await this.service.createItem(dto);
+  async create(
+    @Body() dto: CreateMenuItemDto,
+    @FileField('image') file: Express.Multer.File,
+  ) {
+    return await this.service.createItem(dto, file);
   }
 
   @Put()
-  @PermissionGuard(['menu-item:update'])
   @UpdatedResponse()
+  @ReceiveFile('image')
+  @PermissionGuard(['menu-item:update'])
   @ProtectRoute()
-  async update(@Body() dto: UpdateMenuItemDto) {
-    return await this.service.updateItem(dto);
+  async update(
+    @Body() dto: UpdateMenuItemDto,
+    @FileField('image') file?: Express.Multer.File,
+  ) {
+    return await this.service.updateItem(dto, file);
   }
 
   @Get()

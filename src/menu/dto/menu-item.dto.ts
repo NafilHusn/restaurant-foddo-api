@@ -18,8 +18,9 @@ export class CreateMenuItemDto {
   @OptionalDecimal()
   price: number;
 
-  @NotEmptyString()
-  image: string;
+  @ApiProperty({ type: 'string', format: 'binary' })
+  @IsOptional()
+  image: Express.Multer.File;
 
   @UUIDString()
   categoryId: string;

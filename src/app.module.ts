@@ -12,6 +12,7 @@ import { PermissionModule } from './permission/permission.module';
 import { SharedCacheModule } from '../utils/cache/cache.module';
 import { MenuModule } from './menu/menu.module';
 import { OrderModule } from './orders/orders.module';
+import { FileUploadModule } from '../utils/file-upload/file-upload.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { OrderModule } from './orders/orders.module';
     RestaurantModule,
     MenuModule,
     OrderModule,
+    FileUploadModule,
   ],
 })
 export class AppModule {}

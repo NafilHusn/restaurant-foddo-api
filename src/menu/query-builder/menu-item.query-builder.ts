@@ -18,12 +18,15 @@ export class MenuItemQueryBuilder {
     return where;
   }
 
-  buildCreateQuery(params: CreateMenuItemDto): Prisma.MenuItemsCreateInput {
+  buildCreateQuery(
+    params: CreateMenuItemDto,
+    imageUrl: string,
+  ): Prisma.MenuItemsCreateInput {
     return {
       name: params.name,
       description: params.description,
       price: params.price,
-      image: params.image,
+      image: imageUrl,
       category: { connect: { id: params.categoryId } },
     };
   }
