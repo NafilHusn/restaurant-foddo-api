@@ -5,7 +5,8 @@ import {
   UUIDString,
 } from '../../../utils/string.helper';
 import { Limit, Skip } from '../../../utils/pagination.helper';
-import { IsBoolean, IsNumber, IsOptional } from 'class-validator';
+import { IsBoolean, IsOptional } from 'class-validator';
+import { OptionalDecimal } from '../../../utils/number.helper';
 
 export class CreateMenuItemDto {
   @NotEmptyString()
@@ -14,7 +15,7 @@ export class CreateMenuItemDto {
   @OptionalString()
   description?: string;
 
-  @IsNumber()
+  @OptionalDecimal()
   price: number;
 
   @NotEmptyString()

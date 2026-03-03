@@ -116,4 +116,39 @@ export const CURRENT_PERMISSIONS = [
       },
     ],
   },
+  {
+    module: 'Order',
+    permissions: [
+      {
+        key: 'order:create',
+        action: 'CREATE',
+        assignedRoles: [
+          Roles.ADMIN,
+          Roles.SUPER_ADMIN,
+          Roles.MANAGER,
+          Roles.MEMBER,
+        ],
+      },
+      {
+        key: 'order:read',
+        action: 'READ',
+        assignedRoles: [
+          Roles.ADMIN,
+          Roles.SUPER_ADMIN,
+          Roles.MANAGER,
+          Roles.MEMBER,
+        ],
+      },
+      {
+        key: 'order:update',
+        action: 'UPDATE',
+        assignedRoles: [Roles.ADMIN, Roles.SUPER_ADMIN],
+      },
+      {
+        key: 'order:delete',
+        action: 'DELETE',
+        assignedRoles: [Roles.ADMIN, Roles.SUPER_ADMIN],
+      },
+    ],
+  },
 ];

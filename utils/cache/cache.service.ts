@@ -92,10 +92,12 @@ export class CacheService implements OnModuleDestroy, OnModuleInit {
   }
 
   async getMembers(key: string) {
+    if (!this.enabled) return;
     return await this.redis.smembers(`${this.DEFAULT_CACHE_PREFIX}-${key}`);
   }
 
   async getMember(key: string, member: string) {
+    if (!this.enabled) return;
     return await this.redis.sismember(
       `${this.DEFAULT_CACHE_PREFIX}-${key}`,
       member,

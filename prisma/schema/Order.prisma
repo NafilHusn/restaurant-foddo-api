@@ -1,0 +1,45 @@
+enum OrderStatus {
+    PENDING
+    ACCEPTED
+    DELIVERED
+    CANCELLED
+}
+
+enum PaymentMethod {
+    CASH
+    CARD
+    UPI
+}
+
+enum PaymentStatus {
+    PENDING
+    PAID
+    FAILED
+}
+
+model Order {
+    id            String        @id @default(uuid())
+    customerPhone String?
+    restaurantId  String
+    status        OrderStatus   @default(PENDING)
+    paymentMethod PaymentMethod @default(CASH)
+    paymentStatus PaymentStatus @default(PENDING)
+
+    takenById String
+    takenBy   User   @relation("TakenOrders", fields: [takenById], references: [id])
+
+    orderItems OrderItem[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+    id         String   @id @default(uuid())
+    orderId    String
+    menuItemId String
+    quantity   Int
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+    order      Order    @relation(fields: [orderId], references: [id])
+}

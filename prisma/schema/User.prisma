@@ -13,6 +13,7 @@ model User {
 
   Role         Role[]
   userSessions UserSession[]
+  takenOrders  Order[]       @relation("TakenOrders")
 
   @@index([email])
   @@index([phone])

@@ -11,6 +11,7 @@ import { SwaggerModule } from './swagger/swagger.module';
 import { PermissionModule } from './permission/permission.module';
 import { SharedCacheModule } from '../utils/cache/cache.module';
 import { MenuModule } from './menu/menu.module';
+import { OrderModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { MenuModule } from './menu/menu.module';
     PermissionModule,
     RestaurantModule,
     MenuModule,
+    OrderModule,
   ],
 })
 export class AppModule {}
