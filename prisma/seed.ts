@@ -266,6 +266,93 @@ async function main() {
     ),
   );
 
+  // create restaurants
+  const menus = [
+    {
+      name: 'Arabian',
+      items: {
+        create: [
+          {
+            name: 'Mandhi',
+            description: 'Delicious shawarma',
+            price: 10,
+            image: 'https://www.shutterstock.com/search/chicken-mandi-rice',
+          },
+          {
+            name: 'Shawarma',
+            description: 'Crispy falafel',
+            price: 5,
+            image:
+              'https://www.freepik.com/free-photos-vectors/chicken-shawarma-wrap',
+          },
+        ],
+      },
+    },
+    {
+      name: 'Italian',
+      items: {
+        create: [
+          {
+            name: 'Pizza',
+            description: 'Delicious pizza',
+            price: 15,
+            image:
+              'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+          },
+          {
+            name: 'Pasta',
+            description: 'Delicious pasta',
+            price: 12,
+            image:
+              'https://media.istockphoto.com/id/637214478/photo/pasta-plate.jpg?s=612x612&w=0&k=20&c=oebCQG_Zfv2zJpobSzpF6JFNdsBQUjG6MdQh-En5l3c=',
+          },
+        ],
+      },
+    },
+  ];
+  const restaurant1 = await prisma.restaurant.findFirst({
+    where: { name: 'Restaurant 1' },
+  });
+  const restaurant2 = await prisma.restaurant.findFirst({
+    where: { name: 'Restaurant 2' },
+  });
+  const restaurant3 = await prisma.restaurant.findFirst({
+    where: { name: 'Restaurant 3' },
+  });
+  if (!restaurant1) {
+    await prisma.restaurant.create({
+      data: {
+        name: 'Restaurant 1',
+        country: 'India',
+        menu: {
+          create: menus,
+        },
+      },
+    });
+  }
+  if (!restaurant2) {
+    await prisma.restaurant.create({
+      data: {
+        name: 'Restaurant 2',
+        country: 'America',
+        menu: {
+          create: menus,
+        },
+      },
+    });
+  }
+  if (!restaurant3) {
+    await prisma.restaurant.create({
+      data: {
+        name: 'Restaurant 3',
+        country: 'India',
+        menu: {
+          create: menus,
+        },
+      },
+    });
+  }
+
   console.log('🌱 Seeding completed');
 }
 
