@@ -1,0 +1,57 @@
+enum ShareRole {
+    EDITOR
+    CHECKOUT_ALLOWED
+}
+
+model Cart {
+    id String @id @default(uuid())
+
+    ownerId String @unique
+    owner   User   @relation(fields: [ownerId], references: [id])
+
+    items  CartItem[]
+    shares CartShare[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    orders    Order[]
+}
+
+model CartShare {
+    id String @id @default(uuid())
+
+    cartId String
+    userId String
+
+    role ShareRole @default(EDITOR)
+
+    hasContributed Boolean @default(false)
+
+    cart Cart @relation(fields: [cartId], references: [id])
+    user User @relation(fields: [userId], references: [id])
+
+    createdAt DateTime @default(now())
+
+    @@unique([cartId, userId])
+}
+
+model CartItem {
+    id String @id @default(uuid())
+
+    cartId String
+
+    menuItemId String
+    quantity   Int
+
+    addedBy String
+
+    cart        Cart      @relation(fields: [cartId], references: [id])
+    addedByUser User      @relation(fields: [addedBy], references: [id])
+    menuItem    MenuItems @relation(fields: [menuItemId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([cartId, menuItemId])
+    @@index([cartId])
+}

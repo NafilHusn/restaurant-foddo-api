@@ -27,5 +27,6 @@ model MenuItems {
     deletedAt  DateTime?
     createdAt  DateTime    @default(now())
     updatedAt  DateTime    @updatedAt
+    cartItems  CartItem[]
     orderItems OrderItem[]
 }

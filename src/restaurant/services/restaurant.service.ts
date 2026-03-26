@@ -7,6 +7,7 @@ import {
   UpdateRestaurantDto,
 } from '../dto/restaurant.dto';
 import { RestaurantValidator } from '../validators/restaurant.validator';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class RestaurantService {
@@ -54,5 +55,13 @@ export class RestaurantService {
   async deleteRestaurant(id: string) {
     await this.restaurantRepo.delete(id);
     return { deleted: true };
+  }
+
+  async findAll(where: Prisma.RestaurantWhereInput) {
+    return await this.restaurantRepo.findMany(where);
+  }
+
+  async findOne(where: Prisma.RestaurantWhereInput) {
+    return await this.restaurantRepo.findOne(where);
   }
 }

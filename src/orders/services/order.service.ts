@@ -11,6 +11,7 @@ import {
   UpdateOrderDto,
 } from '../dto/order.dto';
 import { OrderValidator } from '../validators/order.validator';
+import { CartService } from '../../cart/service/cart.service';
 
 @Injectable()
 export class OrderService {
@@ -18,6 +19,7 @@ export class OrderService {
     private readonly orderRepo: OrderRepository,
     private readonly queryBuilder: OrderQueryBuilder,
     private readonly orderValidator: OrderValidator,
+    private readonly cartService: CartService,
   ) {}
 
   async findById(id: string) {
@@ -28,32 +30,41 @@ export class OrderService {
     return order;
   }
 
-  async updateOrder(updateData: UpdateOrderDto) {
+  async updateOrder(updateData: UpdateOrderDto, takenById: string) {
     await this.orderValidator.isOrderExist(updateData.id);
     await this.orderValidator.isOrderEditable(updateData.id);
 
-    const updateQuery = await this.queryBuilder.buildUpdateQuery(updateData);
+    const updateQuery = await this.queryBuilder.buildUpdateQuery(
+      updateData,
+      takenById,
+    );
     await this.orderRepo.update(updateData.id, updateQuery);
     return { updated: true };
   }
 
-  async createOrder(params: CreateOrderDto, userId: string) {
-    await this.orderValidator.isRestaurantExist(params.restaurantId);
+  async createOrder(params: CreateOrderDto, userId: string, country?: string) {
+    const restaurant = await this.orderValidator.isRestaurantExist(
+      params.orderItems[0].menuItemId,
+      country,
+    );
 
     if (!params.orderItems || params.orderItems.length === 0) {
       throw new BadRequestException('Order must contain at least one item');
     }
 
-    await this.orderValidator.isItemRelatedToSameRestaurant(
-      params.orderItems,
-      params.restaurantId,
+    await this.orderValidator.isItemRelatedToSameRestaurant(params.orderItems);
+
+    params.cartId = await this.cartService.checkCartAccess(
+      userId,
+      params.cartId,
     );
 
     const createInput = await this.queryBuilder.buildCreateQuery(
-      params,
+      { ...params, restaurantId: restaurant.id },
       userId,
     );
     const order = await this.orderRepo.insert(createInput);
+    await this.cartService.clearCart(userId, params.cartId);
     return { id: order.id };
   }
 

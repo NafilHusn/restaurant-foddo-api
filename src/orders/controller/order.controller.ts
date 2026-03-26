@@ -40,7 +40,11 @@ export class OrderController {
   @PermissionGuard(['order:create'])
   @ProtectRoute()
   async create(@Body() dto: CreateOrderDto, @Req() req: RequestWithUser) {
-    return await this.service.createOrder(dto, req.user.id);
+    return await this.service.createOrder(
+      dto,
+      req.user.id,
+      req.user.country ?? undefined,
+    );
   }
 
   @Put()
@@ -48,8 +52,8 @@ export class OrderController {
   @FieldPermission(ORDER_FIELD_PERMISSIONS)
   @PermissionGuard(['order:update'])
   @ProtectRoute()
-  async update(@Body() dto: UpdateOrderDto) {
-    return await this.service.updateOrder(dto);
+  async update(@Body() dto: UpdateOrderDto, @Req() req: RequestWithUser) {
+    return await this.service.updateOrder(dto, req.user.id);
   }
 
   @Get()

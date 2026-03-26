@@ -31,8 +31,8 @@ export class CreateOrderDto {
   @OptionalString()
   customerPhone?: string;
 
-  @UUIDString()
-  restaurantId: string;
+  @UUIDStringOptional()
+  cartId?: string;
 
   @ApiProperty({ enum: PaymentMethod })
   @IsEnum(PaymentMethod)
@@ -71,7 +71,7 @@ export class GetOrdersParamsDto {
   restaurantId?: string;
 
   @UUIDStringOptional()
-  takenById?: string;
+  checkedOutById?: string;
 
   @IsEnum(OrderStatus)
   @IsOptional()
