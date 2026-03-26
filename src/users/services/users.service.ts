@@ -89,7 +89,17 @@ export class UserService {
     return { deleted: true };
   }
 
-  async findAll(where: Prisma.UserWhereInput, select?: Prisma.UserSelect) {
-    return await this.userRepo.findMany(where, undefined, undefined, select);
+  async findAll(
+    where: Prisma.UserWhereInput,
+    select?: Prisma.UserSelect,
+    orderBy?: Prisma.UserOrderByWithRelationInput,
+  ) {
+    return await this.userRepo.findMany(
+      where,
+      undefined,
+      undefined,
+      select,
+      orderBy,
+    );
   }
 }

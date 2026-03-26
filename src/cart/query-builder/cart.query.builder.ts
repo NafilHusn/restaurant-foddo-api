@@ -157,6 +157,7 @@ export class CartQueryBuilder {
       sharedItems: {
         select: {
           id: true,
+          quantity: true,
           menuItem: {
             select: {
               id: true,

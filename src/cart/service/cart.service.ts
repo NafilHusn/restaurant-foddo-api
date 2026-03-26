@@ -241,7 +241,9 @@ export class CartService {
       userId,
       country,
     );
-    const users = await this.userService.findAll(where, select);
+    const users = await this.userService.findAll(where, select, {
+      cartShares: { _count: 'desc' },
+    });
     return { data: users, total: users.length };
   }
 

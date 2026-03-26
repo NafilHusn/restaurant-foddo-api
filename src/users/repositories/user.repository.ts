@@ -45,12 +45,14 @@ export class UserRepository {
     skip?: number,
     limit?: number,
     select: Prisma.UserSelect = this.queryBuilder.buildSelectQuery(),
+    orderBy?: Prisma.UserOrderByWithRelationInput,
   ) {
     const entries = await this.dbService.user.findMany({
       where,
       skip,
       take: limit,
       select,
+      orderBy,
     });
     return entries;
   }
