@@ -7,9 +7,10 @@ import { DatabaseModule } from '../../utils/db/db.module';
 import { OrderValidator } from './validators/order.validator';
 import { RestaurantModule } from '../restaurant/restaurant.module';
 import { MenuModule } from '../menu/menu.module';
+import { CartModule } from '../cart/cart.module';
 
 @Module({
-  imports: [DatabaseModule, RestaurantModule, MenuModule],
+  imports: [DatabaseModule, RestaurantModule, MenuModule, CartModule],
   controllers: [OrderController],
   providers: [OrderService, OrderQueryBuilder, OrderRepository, OrderValidator],
   exports: [OrderService],

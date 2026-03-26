@@ -19,7 +19,7 @@ export class OrderQueryBuilder {
       status: true,
       paymentMethod: true,
       paymentStatus: true,
-      takenBy: true,
+      checkedOutBy: true,
       createdAt: true,
       updatedAt: true,
       orderItems: {
@@ -37,8 +37,8 @@ export class OrderQueryBuilder {
     if (params.restaurantId) {
       where.restaurantId = params.restaurantId;
     }
-    if (params.takenById) {
-      where.takenById = params.takenById;
+    if (params.checkedOutById) {
+      where.checkedOutById = params.checkedOutById;
     }
     if (params.status) {
       where.status = params.status;
@@ -64,14 +64,15 @@ export class OrderQueryBuilder {
   }
 
   async buildCreateQuery(
-    params: CreateOrderDto,
+    params: CreateOrderDto & { restaurantId: string },
     takenById?: string,
   ): Promise<Prisma.OrderCreateInput> {
     return {
       customerPhone: params.customerPhone,
       restaurant: { connect: { id: params.restaurantId } },
       paymentMethod: params.paymentMethod,
-      takenBy: { connect: { id: takenById } },
+      checkedOutBy: { connect: { id: takenById } },
+      cart: { connect: { id: params.cartId } },
       orderItems: {
         create:
           (await Promise.all(
@@ -84,7 +85,8 @@ export class OrderQueryBuilder {
                 throw new Error(`Menu item ${item.menuItemId} not found`);
               }
               return {
-                menuItemId: item.menuItemId,
+                addedBy: { connect: { id: takenById } },
+                menuItem: { connect: { id: item.menuItemId } },
                 quantity: item.quantity,
                 price: menuItem.price,
               };
@@ -96,6 +98,7 @@ export class OrderQueryBuilder {
 
   async buildUpdateQuery(
     params: UpdateOrderDto,
+    takenById: string,
   ): Promise<Prisma.OrderUpdateInput> {
     const update: Prisma.OrderUpdateInput = {};
     if (params.status !== undefined) {
@@ -123,6 +126,7 @@ export class OrderQueryBuilder {
               throw new Error(`Menu item ${item.menuItemId} not found`);
             }
             return {
+              addedById: takenById,
               menuItemId: item.menuItemId,
               quantity: item.quantity,
               price: menuItem.price,
@@ -130,9 +134,6 @@ export class OrderQueryBuilder {
           }),
         ),
       };
-    }
-    if (params.restaurantId !== undefined) {
-      update.restaurant = { connect: { id: params.restaurantId } };
     }
     return update;
   }

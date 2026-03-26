@@ -17,8 +17,11 @@ export class OrderValidator {
     private readonly menuItemService: MenuItemService,
   ) {}
 
-  async isRestaurantExist(id: string) {
-    const restaurant = await this.restaurantService.findById(id);
+  async isRestaurantExist(menuItemId: string, country?: string) {
+    const restaurant = await this.restaurantService.findOne({
+      menu: { some: { items: { some: { id: menuItemId } } } },
+      country,
+    });
     if (!restaurant) {
       throw new NotFoundException('Restaurant not found');
     }
@@ -44,17 +47,15 @@ export class OrderValidator {
     return order;
   }
 
-  async isItemRelatedToSameRestaurant(
-    items: OrderItemDto[],
-    restaurantId: string,
-  ) {
-    const menuItems = await this.menuItemService.findAll({
-      id: { in: items.map((item) => item.menuItemId) },
-      category: {
-        restaurant: { id: restaurantId },
+  async isItemRelatedToSameRestaurant(items: OrderItemDto[]) {
+    const menuItems = await this.restaurantService.findAll({
+      menu: {
+        some: {
+          items: { some: { id: { in: items.map((item) => item.menuItemId) } } },
+        },
       },
     });
-    if (menuItems.length !== items.length) {
+    if (menuItems.length > 1) {
       throw new BadRequestException(
         'All menu items must belong to the same restaurant',
       );

@@ -11,9 +11,13 @@ model User {
   deletedAt      DateTime?
   createdAt      DateTime  @default(now())
 
-  Role         Role[]
-  userSessions UserSession[]
-  takenOrders  Order[]       @relation("TakenOrders")
+  Role             Role[]
+  userSessions     UserSession[]
+  checkedOutOrders Order[]       @relation("CheckedOutOrders")
+  sharedItems      CartItem[]
+  cart             Cart[]
+  cartShares       CartShare[]
+  addedItems       OrderItem[]   @relation("AddedItems")
 
   @@index([email])
   @@index([phone])

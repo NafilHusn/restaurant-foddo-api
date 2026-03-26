@@ -13,6 +13,7 @@ import { SharedCacheModule } from '../utils/cache/cache.module';
 import { MenuModule } from './menu/menu.module';
 import { OrderModule } from './orders/orders.module';
 import { FileUploadModule } from '../utils/file-upload/file-upload.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { FileUploadModule } from '../utils/file-upload/file-upload.module';
     MenuModule,
     OrderModule,
     FileUploadModule,
+    CartModule,
   ],
 })
 export class AppModule {}
