@@ -17,6 +17,7 @@ export class OrderQueryBuilder {
       customerPhone: true,
       restaurant: true,
       status: true,
+      cart: { include: { owner: true } },
       paymentMethod: true,
       paymentStatus: true,
       checkedOutBy: true,
