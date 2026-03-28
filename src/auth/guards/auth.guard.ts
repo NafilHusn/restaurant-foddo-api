@@ -11,12 +11,11 @@ import {
 import { SessionService } from 'src/session/services/session.service';
 import { UserService } from 'src/users/services/users.service';
 import { AuthService } from '../services/auth.service';
-
-import { RoleNames } from 'src/roles/constants/role.constants';
 import { RequestWithUser } from '../types/request-with-user';
 import { RolesGuard } from '../../roles/guards/roles.guard';
 import { Role } from '../../roles/decorators/roles.decorator';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { RoleType } from '@prisma/client';
 
 @Injectable()
 class AuthGuard implements CanActivate {
@@ -56,7 +55,7 @@ class AuthGuard implements CanActivate {
   }
 }
 
-export function ProtectRoute(roleNames: RoleNames[] = []) {
+export function ProtectRoute(roleNames: RoleType[] = []) {
   return applyDecorators(
     UseGuards(AuthGuard, RolesGuard),
     ApiBearerAuth(),

@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, RoleType } from '@prisma/client';
 import {
   CreateOrderDto,
   GetOrdersParamsDto,
   UpdateOrderDto,
 } from '../dto/order.dto';
 import { MenuItemService } from '../../menu/services/menu-item.service';
+import { UserWithRole } from '../../auth/types/request-with-user';
 
 @Injectable()
 export class OrderQueryBuilder {
@@ -29,39 +30,48 @@ export class OrderQueryBuilder {
     };
   }
 
-  buildListWhereQuery(params: GetOrdersParamsDto): Prisma.OrderWhereInput {
-    const where: Prisma.OrderWhereInput = {};
+  buildListWhereQuery(
+    params: GetOrdersParamsDto,
+    user: UserWithRole,
+  ): Prisma.OrderWhereInput {
+    const AND: Prisma.OrderWhereInput[] = [];
 
     if (params.customerPhone) {
-      where.customerPhone = params.customerPhone;
+      AND.push({ customerPhone: params.customerPhone });
     }
     if (params.restaurantId) {
-      where.restaurantId = params.restaurantId;
+      AND.push({ restaurantId: params.restaurantId });
     }
     if (params.checkedOutById) {
-      where.checkedOutById = params.checkedOutById;
+      AND.push({ checkedOutById: params.checkedOutById });
     }
     if (params.status) {
-      where.status = params.status;
+      AND.push({ status: params.status });
     }
     if (params.paymentStatus) {
-      where.paymentStatus = params.paymentStatus;
+      AND.push({ paymentStatus: params.paymentStatus });
     }
     if (params.country) {
-      where.restaurant = { country: params.country };
+      AND.push({ restaurant: { country: params.country } });
     }
 
     if (params.fromDate || params.toDate) {
-      where.createdAt = {};
+      const createdAt: Prisma.DateTimeFilter = {};
       if (params.fromDate) {
-        where.createdAt.gte = new Date(params.fromDate);
+        createdAt.gte = new Date(params.fromDate);
       }
       if (params.toDate) {
-        where.createdAt.lte = new Date(params.toDate);
+        createdAt.lte = new Date(params.toDate);
       }
+      AND.push({ createdAt });
     }
-
-    return where;
+    if (
+      user.Role.length > 0 &&
+      user.Role.every((role) => role.name === RoleType.MEMBER)
+    ) {
+      AND.push({ cart: { ownerId: user.id } });
+    }
+    return { AND };
   }
 
   async buildCreateQuery(

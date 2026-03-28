@@ -64,11 +64,12 @@ export class OrderController {
   async list(
     @Query() params: GetOrdersParamsDto,
     @CountryScope() countryScope: string,
+    @Req() req: RequestWithUser,
   ) {
     if (countryScope) {
       params.country = countryScope;
     }
-    return await this.service.getAllOrders(params);
+    return await this.service.getAllOrders(params, req.user);
   }
 
   @Get(':id')

@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, RoleType } from '@prisma/client';
 import { CreateUserDto, GetUsersParamsDto } from '../dto/user.dto';
 import { PasswordService } from '../../../utils/passwords.service';
-import { Roles } from '../../roles/constants/role.constants';
 
 @Injectable()
 export class UserQueryBuilder {
@@ -57,7 +56,7 @@ export class UserQueryBuilder {
     if (currentUserId) {
       AND.push({ id: { not: currentUserId } });
       AND.push({
-        Role: { some: { name: { notIn: [Roles.SUPER_ADMIN] } } },
+        Role: { some: { name: { notIn: [RoleType.SUPER_ADMIN] } } },
       });
     }
     return { AND };

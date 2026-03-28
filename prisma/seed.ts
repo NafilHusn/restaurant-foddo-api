@@ -1,6 +1,5 @@
 // prisma/seed.ts
-import { PrismaClient } from '@prisma/client';
-import { Roles } from '../src/roles/constants/role.constants';
+import { PrismaClient, RoleType } from '@prisma/client';
 import { PasswordService } from '../utils/passwords.service';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
@@ -16,7 +15,7 @@ const passwordService = new PasswordService();
 
 async function main() {
   await prisma.role.createMany({
-    data: Object.values(Roles).map((role) => ({ name: role })),
+    data: Object.values(RoleType).map((role) => ({ name: role })),
     skipDuplicates: true,
   });
 
@@ -31,7 +30,7 @@ async function main() {
         name: 'Admin',
         email: 'admin@gmail.com',
         password: await passwordService.hashPassword('admin123'),
-        Role: { connect: { name: Roles.ADMIN } },
+        Role: { connect: { name: RoleType.ADMIN } },
       },
       include: { Role: true },
     });
@@ -92,12 +91,10 @@ async function main() {
       moduleId: userPermissions.id,
     }),
   );
-  const adminRoleId = admin.Role?.find(
-    (r) => r.name === (Roles.ADMIN as string),
-  )?.id;
+  const adminRoleId = admin.Role?.find((r) => r.name === RoleType.ADMIN)?.id;
   if (adminRoleId) {
     await prisma.role.update({
-      where: { name: Roles.ADMIN },
+      where: { name: RoleType.ADMIN },
       data: {
         rolePermissions: {
           connectOrCreate: adminRolePermissions.map((rp) => ({
@@ -125,7 +122,7 @@ async function main() {
         name: 'Super Admin',
         email: 'superadmin@vbaccounts.com',
         password: await passwordService.hashPassword('superadmin123'),
-        Role: { connect: { name: Roles.SUPER_ADMIN } },
+        Role: { connect: { name: RoleType.SUPER_ADMIN } },
       },
       include: { Role: true },
     });
@@ -172,11 +169,11 @@ async function main() {
   );
 
   const superAdminRoleId = superAdmin.Role?.find(
-    (r) => r.name === (Roles.SUPER_ADMIN as string),
+    (r) => r.name === RoleType.SUPER_ADMIN,
   )?.id;
   if (superAdminRoleId) {
     await prisma.role.update({
-      where: { name: Roles.SUPER_ADMIN },
+      where: { name: RoleType.SUPER_ADMIN },
       data: {
         rolePermissions: {
           connectOrCreate: superAdminRolePermissions.map((rp) => ({
@@ -200,14 +197,14 @@ async function main() {
       email: 'captain-marvel@gmail.com',
       country: 'India',
       password: await passwordService.hashPassword('manager123'),
-      Role: { connect: { name: Roles.MANAGER } },
+      Role: { connect: { name: RoleType.MANAGER } },
     },
     {
       name: 'Captain America',
       email: 'captain-america@gmail.com',
       country: 'America',
       password: await passwordService.hashPassword('manager123'),
-      Role: { connect: { name: Roles.MANAGER } },
+      Role: { connect: { name: RoleType.MANAGER } },
     },
   ];
   await Promise.all(
@@ -233,21 +230,21 @@ async function main() {
       email: 'thanos@gmail.com',
       country: 'India',
       password: await passwordService.hashPassword('member123'),
-      Role: { connect: { name: Roles.MEMBER } },
+      Role: { connect: { name: RoleType.MEMBER } },
     },
     {
       name: 'Thor',
       email: 'thor@gmail.com',
       country: 'India',
       password: await passwordService.hashPassword('member123'),
-      Role: { connect: { name: Roles.MEMBER } },
+      Role: { connect: { name: RoleType.MEMBER } },
     },
     {
       name: 'Travis',
       email: 'travis@gmail.com',
       country: 'America',
       password: await passwordService.hashPassword('member123'),
-      Role: { connect: { name: Roles.MEMBER } },
+      Role: { connect: { name: RoleType.MEMBER } },
     },
   ];
   await Promise.all(

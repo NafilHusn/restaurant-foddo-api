@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Roles, RoleNames } from '../constants/role.constants';
 import { RoleRepository } from '../repositories/role.repository';
+import { RoleType } from '@prisma/client';
 
 @Injectable()
 export class RoleService {
@@ -8,9 +8,9 @@ export class RoleService {
 
   checkRole = (roleName: string) => (role: string) => role === roleName;
 
-  checkAdminRole = this.checkRole(Roles.ADMIN);
+  checkAdminRole = this.checkRole(RoleType.ADMIN);
 
-  async getRoleByName(name: RoleNames) {
+  async getRoleByName(name: RoleType) {
     return await this.roleRepo.findOne({ name });
   }
 

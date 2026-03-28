@@ -12,6 +12,7 @@ import {
 } from '../dto/order.dto';
 import { OrderValidator } from '../validators/order.validator';
 import { CartService } from '../../cart/service/cart.service';
+import { UserWithRole } from '../../auth/types/request-with-user';
 
 @Injectable()
 export class OrderService {
@@ -68,8 +69,8 @@ export class OrderService {
     return { id: order.id };
   }
 
-  async getAllOrders(params: GetOrdersParamsDto) {
-    const where = this.queryBuilder.buildListWhereQuery(params);
+  async getAllOrders(params: GetOrdersParamsDto, user: UserWithRole) {
+    const where = this.queryBuilder.buildListWhereQuery(params, user);
     const [data, total] = await Promise.all([
       this.orderRepo.findMany(where, params.skip, params.limit),
       this.orderRepo.count(where),

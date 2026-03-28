@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { Role } from '../../roles/decorators/roles.decorator';
-import { Roles } from '../../roles/constants/role.constants';
+import { Prisma, RoleType } from '@prisma/client';
 
 @Injectable()
 export class CartQueryBuilder {
@@ -129,7 +127,7 @@ export class CartQueryBuilder {
       Role: {
         some: {
           name: {
-            notIn: [Roles.ADMIN, Roles.SUPER_ADMIN],
+            notIn: [RoleType.ADMIN, RoleType.SUPER_ADMIN],
           },
         },
       },

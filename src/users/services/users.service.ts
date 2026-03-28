@@ -3,11 +3,10 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, RoleType } from '@prisma/client';
 import { RoleService } from 'src/roles/services/role.service';
 import { PasswordService } from 'utils/passwords.service';
 import { UserRepository } from '../repositories/user.repository';
-import { RoleNames } from 'src/roles/constants/role.constants';
 import { UserQueryBuilder } from '../query-builder/user.query-builder';
 import {
   CreateUserDto,
@@ -26,7 +25,7 @@ export class UserService {
     private readonly userValidator: UserValidator,
   ) {}
 
-  async findOneByEmail(email: string, roleName?: RoleNames) {
+  async findOneByEmail(email: string, roleName?: RoleType) {
     let roleId: string | undefined;
     if (roleName) {
       const roleDetails = await this.roleService.getRoleByName(roleName);
@@ -44,7 +43,7 @@ export class UserService {
     return await this.userRepo.findOne({ id });
   }
 
-  async findByRole(roleName: RoleNames) {
+  async findByRole(roleName: RoleType) {
     const roleDetails = await this.roleService.getRoleByName(roleName);
     if (!roleDetails) throw new InternalServerErrorException();
     const where = this.queryBuilder.buildListWhereQuery({

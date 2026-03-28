@@ -3,6 +3,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { CURRENT_PERMISSIONS } from '../constants/permission.constant';
 import { RoleService } from '../../roles/services/role.service';
 import { PermissionQueryBuilder } from '../query-builder/permission.query-builder';
+import { RoleType } from '@prisma/client';
 
 @Injectable()
 export class PermissionService implements OnModuleInit {
@@ -35,15 +36,15 @@ export class PermissionService implements OnModuleInit {
     await this.repo.setPermissionToCache();
   }
 
-  async getPermissionByRole(role: string[]) {
+  async getPermissionByRole(role: RoleType[]) {
     return this.repo.getPermissionKeysByRole(role);
   }
 
-  async hasPermission(role: string, permission: string) {
+  async hasPermission(role: RoleType, permission: string) {
     return this.repo.checkPermission(role, permission);
   }
 
-  async getAllPermissionsWithModules(roles: string[]) {
+  async getAllPermissionsWithModules(roles: RoleType[]) {
     const data = await this.repo.getAllPermissionsWithModules(roles);
     return { data };
   }

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import DatabaseService from '../../../utils/db/db.service';
-import { Prisma } from '@prisma/client';
-import { Roles } from '../../roles/constants/role.constants';
+import { Prisma, RoleType } from '@prisma/client';
 import { CacheService } from '../../../utils/cache/cache.service';
 
 @Injectable()
@@ -19,7 +18,7 @@ export class PermissionRepository {
     return this.db.permission.upsert(permission);
   }
 
-  async getPermissionKeysByRole(role: string[]) {
+  async getPermissionKeysByRole(role: RoleType[]) {
     let permissionKeys: string[] = [];
     const cached = await this.cache.getMembers(
       `permission:role:${role.join(',')}`,
@@ -57,12 +56,12 @@ export class PermissionRepository {
   }
 
   async setPermissionToCache() {
-    // for (const r of Object.values(Roles)) {
-    await this.getPermissionKeysByRole(Object.values(Roles));
+    // for (const r of Object.values(RoleType)) {
+    await this.getPermissionKeysByRole(Object.values(RoleType));
     // }
   }
 
-  async checkPermission(role: string, permission: string) {
+  async checkPermission(role: RoleType, permission: string) {
     try {
       return this.cache.getMember(`permission:role:${role}`, permission);
     } catch (error) {
@@ -82,7 +81,7 @@ export class PermissionRepository {
     }
   }
 
-  async getAllPermissionsWithModules(roles: string[]) {
+  async getAllPermissionsWithModules(roles: RoleType[]) {
     const cache = await this.cache.get(`permission:modules:${roles.join(',')}`);
     if (cache && cache.length > 0) return cache;
     const modules = await this.db.module.findMany({

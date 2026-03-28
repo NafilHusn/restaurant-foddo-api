@@ -1,6 +1,13 @@
+enum RoleType {
+    SUPER_ADMIN
+    ADMIN
+    MANAGER
+    MEMBER
+}
+
 model Role {
     id        String   @id @default(uuid())
-    name      String   @unique
+    name      RoleType @unique
     createdAt DateTime @default(now())
     active    Boolean  @default(false)
 

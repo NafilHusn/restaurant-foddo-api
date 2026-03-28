@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { RequestWithUser } from '../../auth/types/request-with-user';
-import { Roles } from '../../roles/constants/role.constants';
+import { RoleType } from '@prisma/client';
 
 @Injectable()
 export class CountryScopeHandler implements NestInterceptor {
@@ -22,8 +22,7 @@ export class CountryScopeHandler implements NestInterceptor {
     if (
       user.Role.every(
         (role) =>
-          role.name !== (Roles.ADMIN as string) &&
-          role.name !== (Roles.SUPER_ADMIN as string),
+          role.name !== RoleType.ADMIN && role.name !== RoleType.SUPER_ADMIN,
       )
     ) {
       request.countryScope = user.country!;
